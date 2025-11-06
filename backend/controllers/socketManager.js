@@ -1,4 +1,3 @@
-// backend/socket/socket.js
 import { Server } from "socket.io";
 import { Chat } from "../models/chat.models.js";
 

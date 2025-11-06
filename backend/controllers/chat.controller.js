@@ -3,7 +3,6 @@ import { User } from "../models/user.models.js";
 import httpStatus from "http-status";
 
 export const getChatStats = async (req, res) => {
-  try {
     const totalChats = await Chat.countDocuments();
     const totalUsers = await User.countDocuments();
 
@@ -12,10 +11,4 @@ export const getChatStats = async (req, res) => {
       totalChats,
       totalUsers,
     });
-  } catch (error) {
-    console.error("Error fetching chat stats:", error);
-    res
-      .status(httpStatus.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "Failed to get stats" });
-  }
 };
