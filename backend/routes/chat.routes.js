@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getChatStats } from "../controllers/chat.controllers.js";
+import { getChatStats } from "../controllers/chat.controller.js";
 import wrapAsync from "../util/wrapAsync.js";
 import { userVerification } from "../middlewares/auth.middleware.js";
 
