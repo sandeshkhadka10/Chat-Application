@@ -1,10 +1,10 @@
 import express from "express";
 import { createServer } from "node:http";
-import { Server } from "socket.io";
 import mongoose from "mongoose";
 import cors from "cors";
 import {connectToSocket} from "./controllers/socketManager.js";
 import userRoutes from "./routes/user.routes.js";
+import chatRoutes from "./routes/chat.routes.js";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import session from "express-session";
@@ -59,6 +59,7 @@ const sessionOptions = {
 app.use(session(sessionOptions));
 
 app.use("/api/v1/users",userRoutes);
+app.use("/api/chat", chatRoutes);
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message = "Something went wrong" } = err;
