@@ -4,4 +4,4 @@ export default class ExpressError extends Error {
     this.status = status;
     this.message = message;
   }
-}
+};
