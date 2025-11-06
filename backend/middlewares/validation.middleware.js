@@ -1,5 +1,5 @@
 import ExpressError from "../util/ExpressError.js";
-import { usersRegisterSchema,usersLoginSchema,forgetPasswordSchema,resetPasswordSchema} from "../../schema.js";
+import { usersRegisterSchema,usersLoginSchema,forgetPasswordSchema,resetPasswordSchema} from "../schema.js";
 
 export const validateRegister = (req,res,next)=>{
     let {error} = usersRegisterSchema.validate(req.body);
