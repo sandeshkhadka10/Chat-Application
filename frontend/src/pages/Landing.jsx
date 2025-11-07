@@ -33,12 +33,6 @@ export default function LandingPage() {
           } md:flex md:flex-row md:static md:space-x-6 md:bg-transparent md:p-0`}
         >
           <p
-            onClick={() => navigate("/joiningasguest")}
-            className="cursor-pointer hover:text-orange-400 transition"
-          >
-            Join as Guest
-          </p>
-          <p
             onClick={() => navigate("/auth")}
             className="cursor-pointer hover:text-orange-400 transition"
           >
