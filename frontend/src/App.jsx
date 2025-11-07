@@ -1,16 +1,17 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import LandingPage from "./pages/Landing";
+import {BrowserRouter as Router, Routes,Route} from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <p className='text-3xl'>Tailwind css setup</p>
-    </>
+function App(){
+  return(
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+      </Routes>
+      <ToastContainer />
+    </Router>
   )
 }
 
-export default App
+export default App;
