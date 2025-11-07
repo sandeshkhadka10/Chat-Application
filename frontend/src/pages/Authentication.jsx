@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { AuthContext } from '../contexts/AuthContenxt';
+import { AuthContext } from '../contexts/AuthContext';
 import { ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
