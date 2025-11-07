@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import { useNavigate } from "react-router";
 
 const server_url = "http://localhost:8000";
-const ROOM_ID = "global-chat"; // shared chat room for everyone
+const ROOM_ID = "global-chat";
 
 export default function ChatOnlyComponent() {
   const socketRef = useRef();
@@ -15,8 +15,27 @@ export default function ChatOnlyComponent() {
   const [usernameError, setUsernameError] = useState("");
   const [askForUsername, setAskForUsername] = useState(true);
 
+  // ✅ New: chat stats
+  const [stats, setStats] = useState({ totalChats: 0, totalUsers: 0 });
+
+  // Fetch chat stats from backend
+  const fetchStats = async () => {
+    try {
+      const res = await fetch(`${server_url}/api/chat/stats`);
+      const data = await res.json();
+      if (data.success) {
+        setStats({
+          totalChats: data.totalChats,
+          totalUsers: data.totalUsers,
+        });
+      }
+    } catch (err) {
+      console.error("Error fetching stats:", err);
+    }
+  };
+
   useEffect(() => {
-    // Cleanup on component unmount
+    fetchStats(); // ✅ Fetch on load
     return () => {
       if (socketRef.current) socketRef.current.disconnect();
     };
@@ -32,6 +51,8 @@ export default function ChatOnlyComponent() {
 
     socketRef.current.on("chat-message", (data, sender) => {
       setMessages((prev) => [...prev, { sender, data }]);
+      // ✅ Update total chats count live
+      setStats((prev) => ({ ...prev, totalChats: prev.totalChats + 1 }));
     });
 
     socketRef.current.on("disconnect", () => {
@@ -84,8 +105,14 @@ export default function ChatOnlyComponent() {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-5">
+          {/* ✅ Chat header with stats */}
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">Chat Room</h2>
+            <div>
+              <h2 className="text-xl font-bold">Chat Room</h2>
+              <p className="text-sm text-gray-500">
+                Total Chats: {stats.totalChats} | Users: {stats.totalUsers}
+              </p>
+            </div>
             <button
               onClick={leaveRoom}
               className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
@@ -99,7 +126,9 @@ export default function ChatOnlyComponent() {
               messages.map((item, index) => (
                 <div key={index} className="mb-2">
                   <strong className="text-gray-800">{item.sender}</strong>
-                  <p className="text-gray-700 text-sm break-words">{item.data}</p>
+                  <p className="text-gray-700 text-sm break-words">
+                    {item.data}
+                  </p>
                 </div>
               ))
             ) : (
