@@ -12,7 +12,7 @@ export default function LandingPage() {
     >
       {/* Navbar */}
       <nav className="flex justify-between items-center px-5 py-4 relative">
-        <h2 className="text-2xl font-semibold">Meetly</h2>
+        <h2 className="text-2xl font-semibold">Chatly</h2>
 
         {/* Hamburger icon */}
         <div
