@@ -58,7 +58,7 @@ export default function LandingPage() {
         {/* Left side text */}
         <div className="text-2xl md:text-3xl space-y-4 text-left">
           <h1>
-            <span className="text-orange-400">Chat</span> with your loved ones
+            <span className="text-orange-400">Chat</span> with anyone
           </h1>
           <p className="text-lg text-gray-200">Free to speech</p>
           <div
