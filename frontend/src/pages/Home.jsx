@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import RestoreIcon from '@mui/icons-material/Restore';
-import { AuthContext } from "../contexts/AuthContenxt";
+import { AuthContext } from "../contexts/AuthContext";
 import { toast,ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
