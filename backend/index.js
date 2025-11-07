@@ -2,42 +2,45 @@ import express from "express";
 import { createServer } from "node:http";
 import mongoose from "mongoose";
 import cors from "cors";
-import {connectToSocket} from "./controllers/socketManager.js";
+import { connectToSocket } from "./controllers/socketManager.js";
 import userRoutes from "./routes/user.routes.js";
 import chatRoutes from "./routes/chat.routes.js";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+
 dotenv.config();
 
 const app = express();
-const server = createServer(app);
+const server = createServer(app); // ✅ shared HTTP server
 
-const io = connectToSocket(server);
+// ✅ Attach socket.io to same HTTP server
+connectToSocket(server);
 
 const mongo_url = process.env.MONGO_URL;
 async function main() {
   await mongoose.connect(mongo_url);
-  console.log("Connected to MongoDB successfully");
+  console.log("✅ Connected to MongoDB successfully");
 }
 
 main().catch((err) => console.log(err));
 
-app.use(cors({
-  origin:"http://localhost:5173",
-  credentials:true
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173", // matches your frontend
+    credentials: true,
+  })
+);
 
-app.use(express.json({limit:"40kb"}));
-app.use(express.urlencoded({limit:"40kb",extended:true}));
+app.use(express.json({ limit: "40kb" }));
+app.use(express.urlencoded({ limit: "40kb", extended: true }));
 app.use(cookieParser());
 
+// ✅ Mongo Session Store
 const store = MongoStore.create({
   mongoUrl: mongo_url,
-  crypto: {
-    secret: process.env.SESSION_SECRET,
-  },
+  crypto: { secret: process.env.SESSION_SECRET },
   touchAfter: 24 * 3600,
 });
 
@@ -58,14 +61,17 @@ const sessionOptions = {
 };
 app.use(session(sessionOptions));
 
-app.use("/api/v1/users",userRoutes);
+// ✅ Routes
+app.use("/api/v1/users", userRoutes);
 app.use("/api/chat", chatRoutes);
 
+// ✅ Global error handler
 app.use((err, req, res, next) => {
   const { statusCode = 500, message = "Something went wrong" } = err;
   res.status(statusCode).json({ error: message });
 });
 
-app.listen(8000, () => {
-  console.log(`Server running on Port 8000`);
+// ✅ Start the server (important: use `server`, not `app`)
+server.listen(8000, () => {
+  console.log("🚀 Server running with Socket.IO on port 8000");
 });
