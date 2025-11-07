@@ -5,6 +5,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
 import HomeComponent from "./pages/Home";
+import History from "./pages/History";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="/forgetPassword" element={<ForgetPassword />} />
           <Route path='/resetPassword' element={<ResetPassword/>}></Route>
           <Route path='/home' element={<HomeComponent/>}></Route>
+          <Route path='/history' element={<History/>}></Route>
         </Routes>
       </AuthProvider>
       <ToastContainer />
