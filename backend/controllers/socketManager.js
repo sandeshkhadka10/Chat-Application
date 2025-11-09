@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
 import { Chat } from "../models/chat.models.js";
 
-// 🆕 Store connected users in memory
+// Store connected users in memory
 const activeUsers = new Set();
 let connections = {};
 
@@ -23,7 +23,7 @@ export const connectToSocket = (server) => {
       connections[room].push(socket.id);
       socket.username = username;
 
-      console.log(`👤 ${username} joined ${room}`);
+      console.log(`${username} joined ${room}`);
       activeUsers.add(username); // Add user to active list
 
       // Send previous messages

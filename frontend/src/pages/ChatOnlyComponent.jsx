@@ -126,20 +126,6 @@ export default function ChatOnlyComponent() {
             </button>
           </div>
 
-          {/* Active users list */}
-          <div className="mb-4 border border-gray-200 rounded-md p-2 bg-gray-50">
-            <p className="font-semibold mb-1 text-gray-700">Active Users:</p>
-            {activeUsers.length > 0 ? (
-              <ul className="text-sm text-gray-600">
-                {activeUsers.map((u, i) => (
-                  <li key={i}>• {u}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-gray-400">No active users</p>
-            )}
-          </div>
-
           {/* Messages */}
           <div className="border border-gray-300 rounded-md h-64 overflow-y-auto p-3 mb-4">
             {messages.length > 0 ? (
