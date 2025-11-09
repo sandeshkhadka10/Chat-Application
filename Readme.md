@@ -60,11 +60,7 @@ Follow the steps below to install and run Meetly on your local machine.
 3. **Create the credentials key for given .env.sample**
 
    ```bash
-  MONGO_URL=
-  TOKEN_KEY=
-  EMAIL_USER=
-  EMAIL_PASS=
-  SESSION_SECRET=
+  it is given in backend folder
    ```
 
 3. **Start the server i.e backend and frontend**
