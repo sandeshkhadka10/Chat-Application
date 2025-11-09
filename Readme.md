@@ -57,17 +57,28 @@ Follow the steps below to install and run Meetly on your local machine.
    npm install
    ```
 
-3. **Create the credentials key for given .env.sample**
+3. **Create the credentials key**
 
    ```bash
-  it is given in backend folder
+   MONGO_URL=your_mongodb_url
+   TOKEN_KEY=your_jwt_secret
+   EMAIL_USER=your_email
+   EMAIL_PASS=your_email_password
+   SESSION_SECRET=your_session_secret
    ```
 
 3. **Start the server i.e backend and frontend**
 
    ```bash
-   backend=nodemon index.js
-   frontend=npm run dev
+
+# Start Backend
+   cd backend
+   nodemon index.js
+
+# Start Frontend
+  cd frontend
+  npm run dev
+
    ```
 
 4. **Open the application**
