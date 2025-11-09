@@ -69,7 +69,6 @@ Follow the steps below to install and run Meetly on your local machine.
 
 3. **Start the server i.e backend and frontend**
 
-   ```bash
 
 # Start Backend
    cd backend
@@ -79,7 +78,6 @@ Follow the steps below to install and run Meetly on your local machine.
   cd frontend
   npm run dev
 
-   ```
 
 4. **Open the application**
 
