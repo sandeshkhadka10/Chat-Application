@@ -1,8 +1,9 @@
 import { Server } from "socket.io";
 import { Chat } from "../models/chat.models.js";
 
+// 🆕 Store connected users in memory
+const activeUsers = new Set();
 let connections = {};
-let timeOnline = {};
 
 export const connectToSocket = (server) => {
   const io = new Server(server, {
@@ -15,46 +16,55 @@ export const connectToSocket = (server) => {
   });
 
   io.on("connection", (socket) => {
-    console.log("A user connected:", socket.id);
+    console.log("New connection:", socket.id);
 
-    socket.on("join-call", async (room) => {
+    socket.on("join-call", async (room, username) => {
       if (!connections[room]) connections[room] = [];
       connections[room].push(socket.id);
-      timeOnline[socket.id] = new Date();
+      socket.username = username;
 
-      console.log(`User ${socket.id} joined room: ${room}`);
+      console.log(`👤 ${username} joined ${room}`);
+      activeUsers.add(username); // Add user to active list
 
-      // Send chat history from MongoDB
+      // Send previous messages
       const previousMessages = await Chat.find({ room }).sort({ createdAt: 1 });
       previousMessages.forEach((msg) => {
         io.to(socket.id).emit("chat-message", msg.message, msg.sender);
       });
+
+      // Broadcast updated active user list to all clients
+      io.emit("active-users", Array.from(activeUsers));
     });
 
     socket.on("chat-message", async (message, sender) => {
-      const room = "global-chat"; // fixed shared chat room
+      const room = "global-chat";
       if (connections[room]) {
-        // Save to MongoDB
         await Chat.create({ sender, message, room });
-
-        // Broadcast message
         connections[room].forEach((id) => {
           io.to(id).emit("chat-message", message, sender);
         });
-        console.log(`[${room}] ${sender}: ${message}`);
       }
     });
 
     socket.on("disconnect", () => {
+      console.log(`User disconnected: ${socket.id}`);
+
+      if (socket.username) {
+        activeUsers.delete(socket.username); // Remove from active list
+        io.emit("active-users", Array.from(activeUsers)); // update clients
+      }
+
       Object.entries(connections).forEach(([room, users]) => {
         if (users.includes(socket.id)) {
           connections[room] = users.filter((id) => id !== socket.id);
           if (connections[room].length === 0) delete connections[room];
         }
       });
-      console.log(`User disconnected: ${socket.id}`);
     });
   });
 
   return io;
 };
+
+// Export activeUsers so controller can use it
+export { activeUsers };

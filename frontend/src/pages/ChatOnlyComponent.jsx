@@ -15,10 +15,10 @@ export default function ChatOnlyComponent() {
   const [usernameError, setUsernameError] = useState("");
   const [askForUsername, setAskForUsername] = useState(true);
 
-  // New: chat stats
+  // Stats
   const [stats, setStats] = useState({ totalChats: 0, totalUsers: 0 });
+  const [activeUsers, setActiveUsers] = useState([]);
 
-  // Fetch chat stats from backend
   const fetchStats = async () => {
     try {
       const res = await fetch(`${server_url}/api/chat/stats`);
@@ -28,6 +28,7 @@ export default function ChatOnlyComponent() {
           totalChats: data.totalChats,
           totalUsers: data.totalUsers,
         });
+        setActiveUsers(data.activeUsernames || []);
       }
     } catch (err) {
       console.error("Error fetching stats:", err);
@@ -35,28 +36,32 @@ export default function ChatOnlyComponent() {
   };
 
   useEffect(() => {
-    fetchStats(); // Fetch on load
-    return () => {
-      if (socketRef.current) socketRef.current.disconnect();
-    };
+    fetchStats();
+    const interval = setInterval(fetchStats, 8000);
+    return () => clearInterval(interval);
   }, []);
 
   const connectToSocketServer = () => {
     socketRef.current = io(server_url, { secure: false });
 
     socketRef.current.on("connect", () => {
-      socketRef.current.emit("join-call", ROOM_ID);
-      console.log("Connected to chat server:", socketRef.current.id);
+      socketRef.current.emit("join-call", ROOM_ID, username);
+      console.log("Connected:", socketRef.current.id);
     });
 
     socketRef.current.on("chat-message", (data, sender) => {
       setMessages((prev) => [...prev, { sender, data }]);
-      // Update total chats count live
       setStats((prev) => ({ ...prev, totalChats: prev.totalChats + 1 }));
     });
 
+    // Listen for active user updates
+    socketRef.current.on("active-users", (users) => {
+      setActiveUsers(users);
+      setStats((prev) => ({ ...prev, totalUsers: users.length }));
+    });
+
     socketRef.current.on("disconnect", () => {
-      console.log("Disconnected from server");
+      console.log("Disconnected");
     });
   };
 
@@ -76,6 +81,7 @@ export default function ChatOnlyComponent() {
   };
 
   const leaveRoom = () => {
+    if (socketRef.current) socketRef.current.disconnect();
     navigate("/home");
   };
 
@@ -105,12 +111,11 @@ export default function ChatOnlyComponent() {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-5">
-          {/* Chat header with stats */}
           <div className="flex justify-between items-center mb-4">
             <div>
               <h2 className="text-xl font-bold">Chat Room</h2>
               <p className="text-sm text-gray-500">
-                Total Chats: {stats.totalChats} | Users: {stats.totalUsers}
+                Total Chats: {stats.totalChats} | Active Users: {stats.totalUsers}
               </p>
             </div>
             <button
@@ -121,14 +126,27 @@ export default function ChatOnlyComponent() {
             </button>
           </div>
 
-          <div className="border border-gray-300 rounded-md h-80 overflow-y-auto p-3 mb-4">
+          {/* Active users list */}
+          <div className="mb-4 border border-gray-200 rounded-md p-2 bg-gray-50">
+            <p className="font-semibold mb-1 text-gray-700">Active Users:</p>
+            {activeUsers.length > 0 ? (
+              <ul className="text-sm text-gray-600">
+                {activeUsers.map((u, i) => (
+                  <li key={i}>• {u}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-gray-400">No active users</p>
+            )}
+          </div>
+
+          {/* Messages */}
+          <div className="border border-gray-300 rounded-md h-64 overflow-y-auto p-3 mb-4">
             {messages.length > 0 ? (
               messages.map((item, index) => (
                 <div key={index} className="mb-2">
                   <strong className="text-gray-800">{item.sender}</strong>
-                  <p className="text-gray-700 text-sm break-words">
-                    {item.data}
-                  </p>
+                  <p className="text-gray-700 text-sm break-words">{item.data}</p>
                 </div>
               ))
             ) : (
@@ -138,6 +156,7 @@ export default function ChatOnlyComponent() {
             )}
           </div>
 
+          {/* Input */}
           <div className="flex items-center gap-3">
             <input
               type="text"
