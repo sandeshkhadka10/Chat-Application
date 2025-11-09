@@ -70,8 +70,8 @@ Follow the steps below to install and run Meetly on your local machine.
 3. **Start the server i.e backend and frontend**
 
    ```bash
-   backend=>nodemon index.js
-   frontend=>npm run dev
+   backend=nodemon index.js
+   frontend=npm run dev
    ```
 
 4. **Open the application**
