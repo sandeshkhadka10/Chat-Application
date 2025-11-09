@@ -15,7 +15,7 @@ export default function ChatOnlyComponent() {
   const [usernameError, setUsernameError] = useState("");
   const [askForUsername, setAskForUsername] = useState(true);
 
-  // ✅ New: chat stats
+  // New: chat stats
   const [stats, setStats] = useState({ totalChats: 0, totalUsers: 0 });
 
   // Fetch chat stats from backend
@@ -35,7 +35,7 @@ export default function ChatOnlyComponent() {
   };
 
   useEffect(() => {
-    fetchStats(); // ✅ Fetch on load
+    fetchStats(); // Fetch on load
     return () => {
       if (socketRef.current) socketRef.current.disconnect();
     };
@@ -51,7 +51,7 @@ export default function ChatOnlyComponent() {
 
     socketRef.current.on("chat-message", (data, sender) => {
       setMessages((prev) => [...prev, { sender, data }]);
-      // ✅ Update total chats count live
+      // Update total chats count live
       setStats((prev) => ({ ...prev, totalChats: prev.totalChats + 1 }));
     });
 
@@ -105,7 +105,7 @@ export default function ChatOnlyComponent() {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-5">
-          {/* ✅ Chat header with stats */}
+          {/* Chat header with stats */}
           <div className="flex justify-between items-center mb-4">
             <div>
               <h2 className="text-xl font-bold">Chat Room</h2>
